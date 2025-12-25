@@ -51,8 +51,10 @@ export default function UsersPage() {
 
         const json = await res.json();
         setData(json.result || []);
-      } catch (err: any) {
-        setError(err.message || "Алдаа гарлаа");
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : "Алдаа гарлаа";
+        setError(message);
       } finally {
         setLoading(false);
       }

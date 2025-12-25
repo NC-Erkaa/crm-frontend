@@ -2,16 +2,14 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { loginAction } from "@/app/actions/auth";
-
-type LoginState = {
-  error: string | null;
-  success: boolean;
-};
+import { loginAction, type LoginState } from "@/app/actions/auth";
 
 const initialState: LoginState = {
   error: null,
   success: false,
+  token: null,
+  user: null,
+  modules: [],
 };
 
 export default function LoginPage() {
@@ -22,10 +20,13 @@ export default function LoginPage() {
   );
 
   useEffect(() => {
-    if (state.success) {
+    if (state.success && state.token && state.user) {
+      localStorage.setItem("token", state.token);
+      localStorage.setItem("user", JSON.stringify(state.user));
+      localStorage.setItem("modules", JSON.stringify(state.modules ?? []));
       router.push("/dashboard");
     }
-  }, [state.success, router]);
+  }, [state.modules, state.success, state.token, state.user, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 px-4">

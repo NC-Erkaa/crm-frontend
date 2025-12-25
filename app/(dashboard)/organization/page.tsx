@@ -2,6 +2,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/lib/api";
 
 type Organization = {
   id: number;
@@ -58,8 +59,10 @@ export default function OrganizationDetailPage() {
 
         const json = await res.json();
         setData(json.result);
-      } catch (err: any) {
-        setError(err.message || "Алдаа гарлаа");
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : "Алдаа гарлаа";
+        setError(message);
       } finally {
         setLoading(false);
       }

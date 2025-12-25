@@ -2,9 +2,37 @@
 
 import { cookies } from "next/headers";
 
-type LoginState = {
+type Module = {
+  id: number;
+  nameMn: string;
+  nameEn: string;
+  url: string;
+  subModules?: Module[];
+};
+
+type User = {
+  id: number;
+  loginName: string;
+  firstName: string;
+  lastName: string;
+  regNo: string;
+  email: string;
+  phone: string;
+  avatar: string;
+  createdDate: string;
+  createdBy: number;
+  updatedBy: number | null;
+  statusId: number;
+  status: string | null;
+  orgId: number;
+};
+
+export type LoginState = {
   error: string | null;
   success: boolean;
+  token: string | null;
+  user: User | null;
+  modules: Module[];
 };
 
 export async function loginAction(
@@ -15,7 +43,13 @@ export async function loginAction(
   const password = formData.get("password");
 
   if (!loginName || !password) {
-    return { error: "Нэвтрэх нэр болон нууц үг шаардлагатай", success: false };
+    return {
+      error: "Нэвтрэх нэр болон нууц үг шаардлагатай",
+      success: false,
+      token: null,
+      user: null,
+      modules: [],
+    };
   }
 
   try {
@@ -32,6 +66,9 @@ export async function loginAction(
       return {
         error: data.message || "Нэвтрэхэд алдаа гарлаа",
         success: false,
+        token: null,
+        user: null,
+        modules: [],
       };
     }
 
@@ -51,8 +88,20 @@ export async function loginAction(
       path: "/",
     });
 
-    return { error: null, success: true };
+    return {
+      error: null,
+      success: true,
+      token: data.result.token,
+      user: data.result.user,
+      modules: data.result.modules ?? [],
+    };
   } catch {
-    return { error: "Сервертэй холбогдож чадсангүй", success: false };
+    return {
+      error: "Сервертэй холбогдож чадсангүй",
+      success: false,
+      token: null,
+      user: null,
+      modules: [],
+    };
   }
 }

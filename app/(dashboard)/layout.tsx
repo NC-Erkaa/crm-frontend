@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "../../components/sidebar";
 
-export default function DashboardLayout({ children }: any) {
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
-  }, []);
+  }, [router]);
 
   return (
     <div className="flex">
